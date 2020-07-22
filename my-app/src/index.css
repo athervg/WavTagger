@@ -14,6 +14,7 @@ body {
 }
 
 .row{
+	min-height:100%;
 	padding:0px;
 	margin:0px;
 	overflow: hidden;
@@ -75,7 +76,7 @@ div#categoryCol ul li{
 }
 
 div#categoryCol .btn{
-	color:white;
+	color:#fcf4e4;
 	border:0px solid transparent;
 }
 
@@ -85,5 +86,5 @@ div#tagCol ul li{
 }
 
 div#tagCol label{
-color:white;
+	color:#fcf4e4;
 }

@@ -1,5 +1,5 @@
 body {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Epilogue", "Karla", Roboto, Helvetica, Arial, sans-serif;
   <!-- max-width: 38rem; -->
   padding: 0px;
   height: 100%;
@@ -14,7 +14,6 @@ body {
 }
 
 .row{
-	min-height:100%;
 	padding:0px;
 	margin:0px;
 	overflow: hidden;
@@ -25,11 +24,12 @@ body {
 }
 
 #samplesCol{
-	background-color:#fcf4e4;
+	background-color: white;
 }
 
 #tagCol{
-	background-color:#233D4D;
+	background-color:white;
+	color:white;
 }
 
 
@@ -61,6 +61,27 @@ div#samplesCol a{
 	text-decoration: none;
 }
 
+#titleRow{
+	height:20vh;
+	text-align: center;
+	padding: 10px;
+}
+
+#searchRow{
+	height:10vh;
+	width:100%;
+}
+
+#samplesRow{
+	height:70vh;
+}
+
+#sampleList{
+	width:100%;
+	padding-left: 10px;
+	padding-right: 10px;
+}
+
 /*LEFT COL*/
 div#categoryCol .list-group{
 	height: 100vh;
@@ -86,5 +107,5 @@ div#tagCol ul li{
 }
 
 div#tagCol label{
-	color:#fcf4e4;
+	color:black;
 }

@@ -6,16 +6,25 @@
 		<title>Splice</title>
 		<link rel="stylesheet" href="index.css">
 		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+		<link href="https://fonts.googleapis.com/css2?family=Epilogue&display=swap" rel="stylesheet">
+		<link href="https://fonts.googleapis.com/css2?family=Karla&display=swap" rel="stylesheet">
 		<script defer src = "render.js"></script>
 	</head>
 	<body>
 		<div class = "container-fluid">
-			<div class="row row-space">
+			<div class="row">
 				<div class="col-3" id = "categoryCol">
 					<ul class = "list-group list-group-flush" id = "categoryList"></ul>
 				</div>
 				<div class="col-6 overflow-auto" id = "samplesCol">
-					<ul class = "list-group list-group-flush" id = "sampleList"></ul>
+					<div class = "row" id = "titleRow">
+						<h3 class = "mx-auto" id = "categoryTitle"> Instruments </h3>
+					</div>
+					<div class = "row" id = "searchRow">
+					</div>
+					<div class = "row" id = "samplesRow">
+						<ul class = "list-group list-group-flush" id = "sampleList"></ul>
+					</div>
 				</div>
 				<div class="col-3" id = "tagCol">
 					<ul class = "list-group list-group-flush" id = "tagList"></ul>

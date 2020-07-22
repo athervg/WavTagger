@@ -281,7 +281,7 @@ function filterCategory(category){ //takes category name
 			tli[i].style.display = "none";
 		}
 	}
-
+	document.getElementById("categoryTitle").innerHTML = category;
 }
 
 let currentTagsApplied = 0;

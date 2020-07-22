@@ -62,24 +62,36 @@ div#samplesCol a{
 }
 
 #titleRow{
-	height:20vh;
+	height:10vh;
 	text-align: center;
 	padding: 10px;
 }
 
 #searchRow{
-	height:10vh;
+	height:7vh;
 	width:100%;
+	padding-left: 10px;
+	padding-right: 10px;
+	text-align: center;
+	margin-left: 0;
+	margin-right: 0;
+}
+
+#searchBar{
+	width:100%;
+	border:none;
+	border-bottom: 1px solid gray;
 }
 
 #samplesRow{
-	height:70vh;
+	height:83vh;
+	padding-left: 10px;
+	padding-right: 10px;
+	padding-top: 10px;
 }
 
 #sampleList{
 	width:100%;
-	padding-left: 10px;
-	padding-right: 10px;
 }
 
 /*LEFT COL*/
@@ -104,8 +116,16 @@ div#categoryCol .btn{
 /*RIGHT COL*/
 div#tagCol ul li{
 	background-color:inherit;
+	white-space: nowrap;
+	display: inline-block;
 }
 
 div#tagCol label{
 	color:black;
+}
+
+div#tagCol .list-group{
+    height: 100%;
+    overflow:scroll;
+    -webkit-overflow-scrolling: touch;
 }

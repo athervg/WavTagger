@@ -148,6 +148,7 @@ function displayList(){
 		li.appendChild(span);
 		li.appendChild(a);
 		li.setAttribute("data-active", "true");
+		li.setAttribute("data-showing","true");
 		document.getElementById("sampleList").appendChild(li);
 	}
 	addPlayButton();
@@ -300,17 +301,20 @@ function filterTag(tag){
 	for(let i = 0; i < li.length; i++){//for every sample in sampleList
 		if (currentTagsApplied === 1 && !unfilter){ //if adding a filter, and it will be the only filter applied rn
 			li[i].style.display = "none"; //hide all li elements
+			li[i].setAttribute("data-showing","false");
 		}
 		let itags = sampleList.list[i].tags; //tags for sample[i]
 		let intersection = singletag.filter(x => itags.includes(x));
 		if(!unfilter){ //if adding a filter for a tag
 			if(intersection.length > 0 && li[i].getAttribute("data-active") === "true"){ //if matching tag and is active
 				li[i].style.display = ""; //unhide or show it
+				li[i].setAttribute("data-showing","true");
 			}
 		}
 		else{ //if removing a filter for a tag
 			if(intersection.length > 0 && li[i].getAttribute("data-active") === "true"){ //if matching tag and is active
 				li[i].style.display = "none"; //hide it
+				li[i].setAttribute("data-showing","false");
 			}
 		}
 		/*if(currentTagsApplied === 0){ //if there are no tags applied currently
@@ -323,6 +327,29 @@ function filterTag(tag){
 		if(currentTagsApplied === 0 && unfilter){ //if there are no applied tags because you just removed one
 			if(li[i].getAttribute("data-active") === "true"){ //if the element i is active
 				li[i].style.display = ""; //display it
+				li[i].setAttribute("data-showing","true");
+			}
+		}
+	}
+	search();
+}
+
+function search(){
+	let input = document.getElementById("searchBar");
+	let filter = input.value.toUpperCase();
+	ul = document.getElementById("sampleList");
+	li = ul.getElementsByTagName('li');
+	for(let i = 0; i < li.length; i ++){
+		a = li[i].getElementsByTagName("a")[0];
+		let txtValue = a.innerHTML.split(".")[0];
+		if(txtValue.toUpperCase().indexOf(filter) > -1){
+			if(li[i].getAttribute("data-active") === "true" && li[i].getAttribute("data-showing") === "true"){
+				li[i].style.display = ""
+			}
+		}
+		else{
+			if(li[i].getAttribute("data-active") === "true" && li[i].getAttribute("data-showing") === "true"){
+				li[i].style.display = "none";
 			}
 		}
 	}
@@ -344,3 +371,5 @@ createCategory("Drums",["clap","snare"]);
 createCategory("Vocals",["vocal","vocals"]);
 
 initScan();
+
+//NEED TO ADD RESET TAGS ON CATEGORY SWITCH

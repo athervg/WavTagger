@@ -223,7 +223,6 @@ function playAudio(audio){ //takes Audio filepath
 	}
 }
 
-
 function addPlayButton(){
 	let play = document.getElementsByClassName("play");
 	for(let i = 0; i < sampleList.length(); i++){
@@ -241,7 +240,26 @@ function htmlClearAll(){
 	}
 }
 
+function resetTags(){
+	currentTagsApplied = 0;
+	ul = document.getElementById("sampleList");
+	li = ul.getElementsByTagName("li");
+	for(i = 0; i < li.length; i ++){
+		li[i].setAttribute("data-active","true");
+		li[i].setAttribute("data-showing", "true");
+		li[i].style.display = "";
+	}
+	for (let i = 0; i < categories.length; i++){
+		for(let j = 0; j < categories[i].tags.length; j++){
+			id = "tag" + categories[i].tags[j];
+			document.getElementById(id).checked = false;
+		}
+	}
+}
+
+
 function filterCategory(category){ //takes category name
+	resetTags();
 	ul = document.getElementById("sampleList");
 	li = ul.getElementsByTagName("li");
 	let cat = categories.find(element => element.name === category);
@@ -250,7 +268,7 @@ function filterCategory(category){ //takes category name
 		let itags = sampleList.list[i].tags; //tags for sample [i]
 		//if no tags intersect between sample and category, hide li[i]
 		let intersection = itags.filter(x => ctags.includes(x));
-		if(ctags.length === 0){ //reset to all
+		if(ctags.length === 0){ //ALL category
 			if(intersection.length === 0){
 				li[i].style.display = "";
 				li[i].setAttribute("data-active", "true");
@@ -260,7 +278,7 @@ function filterCategory(category){ //takes category name
 				li[i].setAttribute("data-active", "false");
 			}
 		}
-		else {
+		else { //if theres no tag intersection, hide - false, otherwise, show - true
 			if(intersection.length === 0){
 				li[i].style.display = "none";
 				li[i].setAttribute("data-active", "false");
@@ -298,35 +316,29 @@ function filterTag(tag){
 	let singletag = [tag];
 	ul = document.getElementById("sampleList");
 	li = ul.getElementsByTagName("li");
-	for(let i = 0; i < li.length; i++){//for every sample in sampleList
-		if (currentTagsApplied === 1 && !unfilter){ //if adding a filter, and it will be the only filter applied rn
-			li[i].style.display = "none"; //hide all li elements
-			li[i].setAttribute("data-showing","false");
-		}
+	for(let i = 0; i < li.length; i++){ //for every sample in sampleList
 		let itags = sampleList.list[i].tags; //tags for sample[i]
 		let intersection = singletag.filter(x => itags.includes(x));
-		if(!unfilter){ //if adding a filter for a tag
-			if(intersection.length > 0 && li[i].getAttribute("data-active") === "true"){ //if matching tag and is active
-				li[i].style.display = ""; //unhide or show it
+		if(!unfilter && li[i].getAttribute("data-active") === "true"){ //if adding a filter
+			//if its the only filter active, hide all first, then show relevant
+			if(currentTagsApplied === 1){
+				li[i].style.display = "none";
+				li[i].setAttribute("data-showing","false");
+			}
+			if(intersection.length > 0){
+				li[i].style.display = "";
 				li[i].setAttribute("data-showing","true");
 			}
 		}
-		else{ //if removing a filter for a tag
-			if(intersection.length > 0 && li[i].getAttribute("data-active") === "true"){ //if matching tag and is active
+		//if removing a filter
+		else if(unfilter && li[i].getAttribute("data-active") === "true"){
+			//if its the only filter active, hide relevant first, then show all
+			if(intersection.length > 0){
 				li[i].style.display = "none"; //hide it
 				li[i].setAttribute("data-showing","false");
 			}
-		}
-		/*if(currentTagsApplied === 0){ //if there are no tags applied currently
-			for(let j = 0; j < li.length; j ++){
-				if(li[j].getAttribute("data-active") === "true"){
-					li[j].style.display = "";
-				}
-			}
-		}*/
-		if(currentTagsApplied === 0 && unfilter){ //if there are no applied tags because you just removed one
-			if(li[i].getAttribute("data-active") === "true"){ //if the element i is active
-				li[i].style.display = ""; //display it
+			if(currentTagsApplied === 0){
+				li[i].style.display = "";
 				li[i].setAttribute("data-showing","true");
 			}
 		}
@@ -367,8 +379,9 @@ function initScan(){
 
 
 createCategory("All",[]);
-createCategory("Drums",["clap","snare"]);
+createCategory("Drums",["clap","snare","rim","hat","crash","cymbal","kick","click"]);
 createCategory("Vocals",["vocal","vocals"]);
+createCategory("FX",["noise"]);
 
 initScan();
 

@@ -9,11 +9,15 @@
 		<link href="https://fonts.googleapis.com/css2?family=Epilogue&display=swap" rel="stylesheet">
 		<link href="https://fonts.googleapis.com/css2?family=Karla&display=swap" rel="stylesheet">
 		<script defer src = "render.js"></script>
+		<script defer src = "init.js"></script>
 	</head>
 	<body>
 		<div class = "container-fluid">
 			<div class="row">
 				<div class="col-3" id = "categoryCol">
+					<div class = "row" id = "returnHome">
+						<a class="btn btn-outline-secondary" href="settings.html" role="button">☰ Settings</a>
+					</div>
 					<ul class = "list-group list-group-flush" id = "categoryList"></ul>
 				</div>
 				<div class="col-6 overflow-auto" id = "samplesCol">
@@ -21,7 +25,7 @@
 						<h3 class = "mx-auto" id = "categoryTitle"> All </h3>
 					</div>
 					<div class = "row" id = "searchRow">
-						<input type = "text" id = "searchBar" onkeyup = "search()" placeholder = "Search..">
+						<input type = "text" class = "form-control shadow-none rounded-0" id = "searchBar" onkeyup = "search()" placeholder = "Search..">
 					</div>
 					<div class = "row" id = "samplesRow">
 						<ul class = "list-group list-group-flush" id = "sampleList"></ul>

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>Splice</title>
+		<link rel="stylesheet" href="settings.css">
+		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+		<link href="https://fonts.googleapis.com/css2?family=Epilogue&display=swap" rel="stylesheet">
+		<link href="https://fonts.googleapis.com/css2?family=Karla&display=swap" rel="stylesheet">
+		<script defer src = "render.js"></script>
+		<script defer src = "settings.js"></script>
+	</head>
+	<body>
+		<div class = "container-fluid">
+			<div class="row">
+				<div class="col-3" id = "categoryCol">
+					<div class = "row" id = "returnHome">
+						<a class="btn btn-outline-secondary" href="index.html" role="button">← Home</a>
+					</div>
+					<ul class = "list-group list-group-flush" id = "categoryList"></ul>
+					<div class = "row" id = addCategoryRow>
+						<input type = "text" class = "form-control shadow-none rounded-0" id = "addCategoryInput" placeholder = "e.g 'Drums..'">
+						<button type = "button" class = "btn btn-outline-secondary" id = "addCategoryButton" onclick = "addCategoryFromInput()">+</button>
+					</div>
+				</div>
+				<div class="col-6 overflow-auto" id = "midCol">
+					<div class = "row" id = "fileAddRow">
+						<h6 class = "mx-auto" id = "searchableFiles"> Searchable Files </h6>
+						<button type = "button" class = "btn btn-outline-secondary" id = "addFileBar" onclick = "addFile()">Add file</button>
+					</div>
+					<div class = "row" id = "fileListRow">
+						<ul class = "list-group list-group-flush" id = "fileList"></ul>
+					</div>
+				</div>
+				<div class="col-3 border-left" id = "tagCol">
+					<div class = "row" id = "categoryTitleRow">
+						<h6 class = "mx-auto" id = "categoryTitle">All</h6>
+					</div>
+					<ul class = "list-group list-group-flush" id = "tagList"></ul>
+					<div class = "row" id = "addTagRow">
+						<input type = "text" class = "form-control shadow-none rounded-0" id = "addTagInput" placeholder = "e.g 'Kick..'">
+						<button type = "button" class = "btn btn-outline-secondary" id = "addTagButton" onclick = "addTagFromInput()">+</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>

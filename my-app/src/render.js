@@ -2,8 +2,6 @@ const path = require('path');
 const fs = require('fs');
 const { ipcRenderer } = require('electron');
 
-console.log("Running renderjs");
-
 
 ipcRenderer.on('ondragstart', (event, filePath) => {
 	console.log("STARTING DRAG");
@@ -14,13 +12,14 @@ ipcRenderer.on('ondragstart', (event, filePath) => {
 })
 
 
-//list of all filepaths
 const filepaths = ["/Users/athervgole/Comp Sci/Personal Projects/sampleElectronApp/lofitri", "/Users/athervgole/Comp Sci/Personal Projects/sampleElectronApp/lofitest2"];
+const categories = [];
+
 
 let subpaths = [];
 
-const categories = [];
 
+let activeCategory = "All";
 
 
 //create main sample list
@@ -156,6 +155,8 @@ function displayList(){
 
 function displayCategories(){
 	for(let i = 0; i < categories.length; i ++){
+		let li = document.createElement("li");
+
 		let btn = document.createElement("button");
 		btn.type = "button";
 		btn.className = "btn btn-outline-dark";
@@ -164,8 +165,17 @@ function displayCategories(){
 		btn.onclick = function(){
 			filterCategory(name);
 		}
-		let li = document.createElement("li");
+		let closebtn = document.createElement("button");
+		closebtn.type = "button";
+		closebtn.className = "btn btn-outline-danger categoryDeleteBtn";
+		closebtn.innerHTML = "\u00D7";
+		closebtn.onclick = function(){
+			categories.splice(i,1);
+			li.style.display = "none";
+		}
+		closebtn.style.display = "none";
 		li.className = "list-group-item";
+		li.appendChild(closebtn);
 		li.appendChild(btn);
 		document.getElementById("categoryList").appendChild(li);
 	}
@@ -175,6 +185,7 @@ function displayTags(){
 	for(let x = 0; x < categories.length; x ++){
 		let currentTags = categories[x].tags;
 		for(let i = 0; i < currentTags.length; i++){
+			let li = document.createElement("li");
 			let div = document.createElement("div");
 			div.setAttribute("class", "custom-control custom-switch");
 			let input = document.createElement("input");
@@ -185,13 +196,26 @@ function displayTags(){
 			input.onclick = function(){
 				filterTag(currentTags[i]);
 			}
+
+			let closebtn = document.createElement("button");
+			closebtn.type = "button";
+			closebtn.className = "btn btn-outline-danger btn-sm float-right tagDeleteBtn";
+			closebtn.innerHTML = "\u00D7";
+			closebtn.onclick = function(){
+				categories[x].tags.splice(i,1);
+				li.style.display = "none";
+			}
+			closebtn.style.display = "none";
+
 			let label = document.createElement("label");
 			label.setAttribute("class","custom-control-label");
 			label.setAttribute("for",id);
 			label.innerHTML = currentTags[i];
+
 			div.appendChild(input);
 			div.appendChild(label);
-			let li = document.createElement("li");
+			div.appendChild(closebtn);
+
 			li.className = "list-group-item";
 			li.id = "" + currentTags[i];
 			li.appendChild(div);
@@ -199,7 +223,6 @@ function displayTags(){
 		}
 	}
 }
-
 
 
 //add play functionality to each <a> link to sample
@@ -234,16 +257,42 @@ function addPlayButton(){
 }
 
 function htmlClearAll(){
-	let parent = document.getElementById("sampleList");
-	while(parent.firstChild){
-		parent.removeChild(parent.firstChild);
+	resetTags();
+	HTMLclearTags();
+	HTMLclearCategories();
+	HTMLclearSampleList();
+}
+
+function HTMLclearSampleList(){
+	if(document.getElementById("sampleList")){
+		let parent = document.getElementById("sampleList");
+		while(parent.firstChild){
+			parent.removeChild(parent.firstChild);
+		}
+	}
+}
+
+function HTMLclearCategories(){
+	let catParent = document.getElementById("categoryList");
+	while(catParent.firstChild){
+		catParent.removeChild(catParent.firstChild);
+	}
+}
+
+function HTMLclearTags(){
+	let tagParent = document.getElementById("tagList");
+	while(tagParent.firstChild){
+		tagParent.removeChild(tagParent.firstChild);
 	}
 }
 
 function resetTags(){
 	currentTagsApplied = 0;
-	ul = document.getElementById("sampleList");
-	li = ul.getElementsByTagName("li");
+	let li = [];
+	if(document.getElementById("sampleList")){
+		let ul = document.getElementById("sampleList");
+		let li = ul.getElementsByTagName("li");
+	}
 	for(i = 0; i < li.length; i ++){
 		li[i].setAttribute("data-active","true");
 		li[i].setAttribute("data-showing", "true");
@@ -252,23 +301,29 @@ function resetTags(){
 	for (let i = 0; i < categories.length; i++){
 		for(let j = 0; j < categories[i].tags.length; j++){
 			id = "tag" + categories[i].tags[j];
-			document.getElementById(id).checked = false;
+			if(document.getElementById(id)){
+				document.getElementById(id).checked = false;
+			}
 		}
 	}
 }
 
-
 function filterCategory(category){ //takes category name
+	console.log("filtering category " + category);
 	resetTags();
-	ul = document.getElementById("sampleList");
-	li = ul.getElementsByTagName("li");
+	activeCategory = category;
+	let li = [];
+	if(document.getElementById("sampleList")){
+		let ul = document.getElementById("sampleList");
+		li = ul.getElementsByTagName("li");
+	}
 	let cat = categories.find(element => element.name === category);
 	let ctags = cat.tags; //tags for category [i]
 	for(let i = 0; i < li.length; i ++){ //for every sample in sampleList
 		let itags = sampleList.list[i].tags; //tags for sample [i]
 		//if no tags intersect between sample and category, hide li[i]
 		let intersection = itags.filter(x => ctags.includes(x));
-		if(ctags.length === 0){ //ALL category
+		if(category === "All"){ //ALL category
 			if(intersection.length === 0){
 				li[i].style.display = "";
 				li[i].setAttribute("data-active", "true");
@@ -293,7 +348,7 @@ function filterCategory(category){ //takes category name
 	let tul = document.getElementById("tagList");
 	let tli = tul.getElementsByTagName("li");
 	for(let i = 0; i < tli.length; i ++){
-		if(ctags.includes(tli[i].id) || ctags.length === 0){
+		if(ctags.includes(tli[i].id) || category === "All"){
 			tli[i].style.display = "";
 		}
 		else{
@@ -314,8 +369,8 @@ function filterTag(tag){
 		currentTagsApplied--; //current tags --
 	}
 	let singletag = [tag];
-	ul = document.getElementById("sampleList");
-	li = ul.getElementsByTagName("li");
+	let ul = document.getElementById("sampleList");
+	let li = ul.getElementsByTagName("li");
 	for(let i = 0; i < li.length; i++){ //for every sample in sampleList
 		let itags = sampleList.list[i].tags; //tags for sample[i]
 		let intersection = singletag.filter(x => itags.includes(x));
@@ -349,8 +404,8 @@ function filterTag(tag){
 function search(){
 	let input = document.getElementById("searchBar");
 	let filter = input.value.toUpperCase();
-	ul = document.getElementById("sampleList");
-	li = ul.getElementsByTagName('li');
+	let ul = document.getElementById("sampleList");
+	let li = ul.getElementsByTagName('li');
 	for(let i = 0; i < li.length; i ++){
 		a = li[i].getElementsByTagName("a")[0];
 		let txtValue = a.innerHTML.split(".")[0];
@@ -368,21 +423,19 @@ function search(){
 }
 
 function initScan(){
-	generateSubPaths()
 	sampleList.deleteAll();
 	htmlClearAll();
+	generateSubPaths()
 	loadSamples();
 	displayList();
 	displayCategories();
 	displayTags();
 }
 
-
 createCategory("All",[]);
 createCategory("Drums",["clap","snare","rim","hat","crash","cymbal","kick","click"]);
 createCategory("Vocals",["vocal","vocals"]);
 createCategory("FX",["noise"]);
 
-initScan();
 
 //NEED TO ADD RESET TAGS ON CATEGORY SWITCH

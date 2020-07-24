@@ -1,6 +1,7 @@
 const path = require('path');
 const fs = require('fs');
 const { ipcRenderer } = require('electron');
+const Store = require('./store.js');
 
 
 ipcRenderer.on('ondragstart', (event, filePath) => {
@@ -11,13 +12,30 @@ ipcRenderer.on('ondragstart', (event, filePath) => {
   	})
 })
 
+let defaultCategory = {
+	name : "All",
+	tags: [],
 
-const filepaths = ["/Users/athervgole/Comp Sci/Personal Projects/sampleElectronApp/lofitri", "/Users/athervgole/Comp Sci/Personal Projects/sampleElectronApp/lofitest2"];
-const categories = [];
+	addTags(taglist){
+		self.tags = [...self.tags, ...taglist];
+	}
+}
 
+const store = new Store({
+	configName: 'preferences',
+	defaults: {
+		fps : [],
+		cts : [defaultCategory]
+	}
+});
+
+
+//const filepaths = ["/Users/athervgole/Comp Sci/Personal Projects/sampleElectronApp/lofitri", "/Users/athervgole/Comp Sci/Personal Projects/sampleElectronApp/lofitest2"];
+//const categories = [];
+let filepaths = store.get('fps');
+let categories = store.get('cts');
 
 let subpaths = [];
-
 
 let activeCategory = "All";
 
@@ -432,10 +450,10 @@ function initScan(){
 	displayTags();
 }
 
-createCategory("All",[]);
+/*createCategory("All",[]);
 createCategory("Drums",["clap","snare","rim","hat","crash","cymbal","kick","click"]);
 createCategory("Vocals",["vocal","vocals"]);
-createCategory("FX",["noise"]);
+createCategory("FX",["noise"]);*/
 
 
 //NEED TO ADD RESET TAGS ON CATEGORY SWITCH

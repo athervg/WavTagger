@@ -1,6 +1,7 @@
 const { remote } = require('electron');
 const { dialog } = remote;
 
+
 //within function
 function addFile(){
 	console.log("filepaths before : $$ " + filepaths);
@@ -12,6 +13,7 @@ function addFile(){
 			newListItem(fp);
 		}
 	}
+	store.set('fps',filepaths);
 	console.log("filepaths before : $$ " + filepaths);
 }
 
@@ -53,6 +55,7 @@ function addCategoryFromInput(){
 	displayCategories();
 	showDeleteButtons();
 	document.getElementById("addCategoryInput").value = "";
+	store.set('cts',categories);
 }
 
 function addTagFromInput(){
@@ -71,6 +74,7 @@ function addTagFromInput(){
 	filterCategory(activeCategory);
 	showDeleteButtons();
 	document.getElementById("addTagInput").value = "";
+	store.set('cts',categories);
 }
 
 //display already known Files

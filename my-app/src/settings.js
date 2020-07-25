@@ -1,6 +1,7 @@
 const { remote } = require('electron');
 const { dialog } = remote;
 
+insettings = true;
 
 //within function
 function addFile(){
@@ -13,8 +14,9 @@ function addFile(){
 			newListItem(fp);
 		}
 	}
+	//store.set('fps',filepaths);
+	console.log("filepaths after : $$ " + filepaths);
 	store.set('fps',filepaths);
-	console.log("filepaths before : $$ " + filepaths);
 }
 
 function removeFile(filepath){
@@ -22,6 +24,7 @@ function removeFile(filepath){
 	if(index > -1){
 		filepaths.splice(index,1);
 	}
+	store.set('fps',filepaths);
 }
 
 function newListItem(filepath){
@@ -102,3 +105,4 @@ function showDeleteButtons(){
 }
 
 showDeleteButtons();
+filterCategory(categories[1].name);

@@ -30,14 +30,17 @@ const store = new Store({
 });
 
 
-//const filepaths = ["/Users/athervgole/Comp Sci/Personal Projects/sampleElectronApp/lofitri", "/Users/athervgole/Comp Sci/Personal Projects/sampleElectronApp/lofitest2"];
-//const categories = [];
+//let filepaths = ["/Users/athervgole/Comp Sci/Personal Projects/sampleElectronApp/lofitri", "/Users/athervgole/Comp Sci/Personal Projects/sampleElectronApp/lofitest2"];
+//let categories = [];
+
 let filepaths = store.get('fps');
 let categories = store.get('cts');
 
 let subpaths = [];
 
 let activeCategory = "All";
+let insettings = false;
+
 
 
 //create main sample list
@@ -190,14 +193,18 @@ function displayCategories(){
 		closebtn.onclick = function(){
 			categories.splice(i,1);
 			li.style.display = "none";
+			store.set('cts',categories);
 		}
 		closebtn.style.display = "none";
 		li.className = "list-group-item";
-		li.appendChild(closebtn);
+		if(categories[i].name != "All"){
+			li.appendChild(closebtn);
+		}
 		li.appendChild(btn);
 		document.getElementById("categoryList").appendChild(li);
 	}
 }
+
 
 function displayTags(){
 	for(let x = 0; x < categories.length; x ++){
@@ -220,8 +227,12 @@ function displayTags(){
 			closebtn.className = "btn btn-outline-danger btn-sm float-right tagDeleteBtn";
 			closebtn.innerHTML = "\u00D7";
 			closebtn.onclick = function(){
-				categories[x].tags.splice(i,1);
+				console.log("removing tag " + currentTags[i] + " from " + activeCategory);
+				removeTag(activeCategory,currentTags[i]);
 				li.style.display = "none";
+				let ul = document.getElementById("tagList");
+				ul.removeChild(li);
+				store.set('cts',categories);
 			}
 			closebtn.style.display = "none";
 
@@ -238,6 +249,16 @@ function displayTags(){
 			li.id = "" + currentTags[i];
 			li.appendChild(div);
 			document.getElementById("tagList").appendChild(li);
+		}
+	}
+}
+
+function removeTag(category, tag){
+	for(let i = 0; i < categories.length; i ++){
+		if (categories[i].name === category){
+			let index = categories[i].tags.indexOf(tag);
+			categories[i].tags.splice(index,1);
+			break;
 		}
 	}
 }
@@ -450,10 +471,12 @@ function initScan(){
 	displayTags();
 }
 
-/*createCategory("All",[]);
+
+/*
+createCategory("All",[]);
 createCategory("Drums",["clap","snare","rim","hat","crash","cymbal","kick","click"]);
 createCategory("Vocals",["vocal","vocals"]);
-createCategory("FX",["noise"]);*/
-
+createCategory("FX",["noise"]);
+*/
 
 //NEED TO ADD RESET TAGS ON CATEGORY SWITCH

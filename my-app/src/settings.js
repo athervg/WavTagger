@@ -1,9 +1,8 @@
 const { remote } = require('electron');
 const { dialog } = remote;
 
-insettings = true;
 
-//within function
+//handles user adding files to searchable paths (global filepaths)
 function addFile(){
 	console.log("filepaths before : $$ " + filepaths);
 	const filepath = dialog.showOpenDialogSync({properties: ['openDirectory']}) || null;
@@ -19,6 +18,7 @@ function addFile(){
 	store.set('fps',filepaths);
 }
 
+//handles user deleting files from searchable paths
 function removeFile(filepath){
 	const index = filepaths.indexOf(filepath);
 	if(index > -1){
@@ -27,6 +27,7 @@ function removeFile(filepath){
 	store.set('fps',filepaths);
 }
 
+//handles adding filepaths to HTML list of active searchable files
 function newListItem(filepath){
 	let li = document.createElement("li");
 	let t = document.createElement("div");
@@ -51,6 +52,12 @@ function newListItem(filepath){
 
 }
 
+//display active searchable files
+for(let i = 0; i < filepaths.length; i++){
+	newListItem(filepaths[i]);
+}
+
+//handles custom category creation (including refreshing category list and delete buttons)
 function addCategoryFromInput(){
 	let input = document.getElementById("addCategoryInput").value;
 	createCategory(input,[]);
@@ -61,6 +68,7 @@ function addCategoryFromInput(){
 	store.set('cts',categories);
 }
 
+//handles custom tag creation (within category)
 function addTagFromInput(){
 	let input = document.getElementById("addTagInput").value;
 	console.log("active category is " + activeCategory);
@@ -80,19 +88,13 @@ function addTagFromInput(){
 	store.set('cts',categories);
 }
 
-//display already known Files
-for(let i = 0; i < filepaths.length; i++){
-	newListItem(filepaths[i]);
-}
 
-
+//on opening settings, refresh/redisplay categories & tags
 displayCategories()
 displayTags();
 
-//show delete buttons on categories
 
-
-//show delete buttons on tags
+//on opening settings, show delete buttons on tags and categories
 function showDeleteButtons(){
 	let tagDeleteButtons = document.getElementsByClassName("tagDeleteBtn");
 	for(let i = 0; i < tagDeleteButtons.length; i++){
@@ -104,5 +106,6 @@ function showDeleteButtons(){
 	}
 }
 
+
 showDeleteButtons();
-filterCategory(categories[1].name);
+filterCategory(categories[1].name); //filters by first category in list by default for editing purposes

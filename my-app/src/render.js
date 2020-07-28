@@ -3,7 +3,7 @@ const fs = require('fs');
 const { ipcRenderer } = require('electron');
 const Store = require('./store.js');
 
-
+//handle drag and drop event from app to OS
 ipcRenderer.on('ondragstart', (event, filePath) => {
 	console.log("STARTING DRAG");
  	event.sender.startDrag({
@@ -12,6 +12,7 @@ ipcRenderer.on('ondragstart', (event, filePath) => {
   	})
 })
 
+//default ALL category with no tags
 let defaultCategory = {
 	name : "All",
 	tags: [],
@@ -21,29 +22,30 @@ let defaultCategory = {
 	}
 }
 
+//data store for first load
 const store = new Store({
 	configName: 'preferences',
 	defaults: {
 		fps : [],
-		cts : [defaultCategory]
+		cts : [defaultCategory] //ALL category as default (later made non-deleteable)
 	}
 });
 
 
-//let filepaths = ["/Users/athervgole/Comp Sci/Personal Projects/sampleElectronApp/lofitri", "/Users/athervgole/Comp Sci/Personal Projects/sampleElectronApp/lofitest2"];
-//let categories = [];
 
+//load user determined filepaths and categories
 let filepaths = store.get('fps');
 let categories = store.get('cts');
 
+//empty subpaths folder (used later for recursive search of parent directories/'filepaths')
 let subpaths = [];
 
+//default active category: ALL
 let activeCategory = "All";
-let insettings = false;
 
 
 
-//create main sample list
+//create main sample list object (list: contains sample objects; add: takes sample object)
 const sampleList = {
 	list: [],
 	add: function(sample){
@@ -59,7 +61,7 @@ const sampleList = {
 	}
 }
 
-//function to create category given name (eg Vocals);
+//create category given name (eg Vocals);
 function createCategory(name, tags){
 	let category = {
 		name : name,
@@ -72,7 +74,7 @@ function createCategory(name, tags){
 	categories.push(category);
 }
 
-//function to generate tags given dirent.name (eg Cymatics Clap.wav);
+//generate tags given dirent.name (eg 'Clap-01.wav') would generate potentially user generated 'clap' tag;
 function generateTags(filename){
 	let lowercase = filename.toLowerCase();
 	const tokenized = lowercase.split(" ").join(",").split("-").join(",").split("_").join(",").split(",");
@@ -85,7 +87,7 @@ function generateTags(filename){
 	return tags;
 }
 
-//function to create sample object given filepath (eg create object with name Cymatics Clap.wav given users/[name].../Cymatics Clap.wav)
+//create sample object given filepath (eg create object with name Cymatics Clap.wav given users/[name].../Cymatics Clap.wav)
 function returnSampleObj(filepath, tags){
 	let sample = {
 		name: path.basename(filepath),
@@ -100,6 +102,7 @@ function returnSampleObj(filepath, tags){
 }
 
 //given user inputted filepaths, generate list of all subfolders within filepaths
+//used in initialization to iterate and tag samples
 function generateSubPaths(){
 	subpaths = [];
 	function flatten(lists) {
@@ -171,13 +174,15 @@ function displayList(){
 		li.setAttribute("data-showing","true");
 		document.getElementById("sampleList").appendChild(li);
 	}
-	addPlayButton();
+	addPlayButton(); //appends play button to beginning of list entry
 }
 
+//creates HTML elements for each category and appends to left column category list
 function displayCategories(){
 	for(let i = 0; i < categories.length; i ++){
 		let li = document.createElement("li");
 
+		//filter button (eg click on Drums to filter by all Drums tags)
 		let btn = document.createElement("button");
 		btn.type = "button";
 		btn.className = "btn btn-outline-dark";
@@ -186,6 +191,8 @@ function displayCategories(){
 		btn.onclick = function(){
 			filterCategory(name);
 		}
+
+		//create and append close button (hidden by default)
 		let closebtn = document.createElement("button");
 		closebtn.type = "button";
 		closebtn.className = "btn btn-outline-danger categoryDeleteBtn";
@@ -205,11 +212,13 @@ function displayCategories(){
 	}
 }
 
-
+//creates HTML elements for each tag and appends to right column taglist
 function displayTags(){
 	for(let x = 0; x < categories.length; x ++){
 		let currentTags = categories[x].tags;
 		for(let i = 0; i < currentTags.length; i++){
+
+			//creates tag slider button to filter by tag
 			let li = document.createElement("li");
 			let div = document.createElement("div");
 			div.setAttribute("class", "custom-control custom-switch");
@@ -222,6 +231,7 @@ function displayTags(){
 				filterTag(currentTags[i]);
 			}
 
+			//creates delete/close button for tags in settings menu, hidden by default)
 			let closebtn = document.createElement("button");
 			closebtn.type = "button";
 			closebtn.className = "btn btn-outline-danger btn-sm float-right tagDeleteBtn";
@@ -236,6 +246,7 @@ function displayTags(){
 			}
 			closebtn.style.display = "none";
 
+			//adds tag name
 			let label = document.createElement("label");
 			label.setAttribute("class","custom-control-label");
 			label.setAttribute("for",id);
@@ -253,6 +264,7 @@ function displayTags(){
 	}
 }
 
+//deletes tag from category
 function removeTag(category, tag){
 	for(let i = 0; i < categories.length; i ++){
 		if (categories[i].name === category){
@@ -263,9 +275,7 @@ function removeTag(category, tag){
 	}
 }
 
-
-//add play functionality to each <a> link to sample
-
+//handling for single sample playing at a time, start/stop functionality
 let globalPlayingAudio = new Audio();
 let globalPlayingFilepath;
 function playAudio(audio){ //takes Audio filepath
@@ -285,6 +295,7 @@ function playAudio(audio){ //takes Audio filepath
 	}
 }
 
+//gives play buttons correct predefined playAudio functionality
 function addPlayButton(){
 	let play = document.getElementsByClassName("play");
 	for(let i = 0; i < sampleList.length(); i++){
@@ -295,6 +306,7 @@ function addPlayButton(){
 	}
 }
 
+//clear all HTML list(ul) elements (taglist, categorylist, samplelist)
 function htmlClearAll(){
 	resetTags();
 	HTMLclearTags();
@@ -302,6 +314,7 @@ function htmlClearAll(){
 	HTMLclearSampleList();
 }
 
+//clears ul sampleList
 function HTMLclearSampleList(){
 	if(document.getElementById("sampleList")){
 		let parent = document.getElementById("sampleList");
@@ -311,6 +324,7 @@ function HTMLclearSampleList(){
 	}
 }
 
+//clears ul categoryList
 function HTMLclearCategories(){
 	let catParent = document.getElementById("categoryList");
 	while(catParent.firstChild){
@@ -318,6 +332,7 @@ function HTMLclearCategories(){
 	}
 }
 
+//clears ul tagList
 function HTMLclearTags(){
 	let tagParent = document.getElementById("tagList");
 	while(tagParent.firstChild){
@@ -325,6 +340,9 @@ function HTMLclearTags(){
 	}
 }
 
+//refreshes category and tag filtering
+//resets all tags to showing and active, then iterates over potentially edited categories to show correct tags
+//this is to handle the user editing categories and tags on settings page
 function resetTags(){
 	currentTagsApplied = 0;
 	let li = [];
@@ -347,6 +365,7 @@ function resetTags(){
 	}
 }
 
+//displays correct tags and samples per category
 function filterCategory(category){ //takes category name
 	console.log("filtering category " + category);
 	resetTags();
@@ -397,11 +416,12 @@ function filterCategory(category){ //takes category name
 	document.getElementById("categoryTitle").innerHTML = category;
 }
 
+//filters (and unfilters based on whether a tag is active) given tag name)
 let currentTagsApplied = 0;
 function filterTag(tag){
 	let id = "tag" + tag;
 	let unfilter = !(document.getElementById(id).checked); //removing a filter T/F
-	if(!unfilter){ //if adding a filter
+	if(!unfilter){ //if adding a tag filter
 		currentTagsApplied++ //current tags ++
 	}
 	else{ //if removing a filter
@@ -424,7 +444,7 @@ function filterTag(tag){
 				li[i].setAttribute("data-showing","true");
 			}
 		}
-		//if removing a filter
+		//if removing a tag filter
 		else if(unfilter && li[i].getAttribute("data-active") === "true"){
 			//if its the only filter active, hide relevant first, then show all
 			if(intersection.length > 0){
@@ -440,11 +460,16 @@ function filterTag(tag){
 	search();
 }
 
+//search bar implementation for sample list
 function search(){
+
+	//handle input and get sample list
 	let input = document.getElementById("searchBar");
 	let filter = input.value.toUpperCase();
 	let ul = document.getElementById("sampleList");
 	let li = ul.getElementsByTagName('li');
+
+	//iterate through and show/hide samples based on whether or not they are in the active category and tag(s)
 	for(let i = 0; i < li.length; i ++){
 		a = li[i].getElementsByTagName("a")[0];
 		let txtValue = a.innerHTML.split(".")[0];
@@ -461,6 +486,7 @@ function search(){
 	}
 }
 
+//initial scan to be run on app launch
 function initScan(){
 	sampleList.deleteAll();
 	htmlClearAll();

@@ -1,7 +1,7 @@
 # WavTagger
 Customizable Audio File Congregator &amp; Manager for Music Producers
 
-# How to use:
+# Usage:
 Open app and enter settings to link your audio sample folders.
 
 Once linked, you can begin customizing categories and associated tags, for example:  

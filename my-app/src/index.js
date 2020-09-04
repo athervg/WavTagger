@@ -14,6 +14,7 @@ const createWindow = () => {
   const mainWindow = new BrowserWindow({
     width: 900,
     height: 600,
+    title:"WavTagger",
     webPreferences: {
 	    nodeIntegration: true,
     }

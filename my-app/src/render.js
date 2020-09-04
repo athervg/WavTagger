@@ -13,7 +13,7 @@ ipcRenderer.on('ondragstart', (event, filePath) => {
 })
 
 //default ALL category with no tags
-let defaultCategory = {
+let allCategory = {
 	name : "All",
 	tags: [],
 
@@ -22,12 +22,13 @@ let defaultCategory = {
 	}
 }
 
+
 //data store for first load
 const store = new Store({
 	configName: 'preferences',
 	defaults: {
 		fps : [],
-		cts : [defaultCategory] //ALL category as default (later made non-deleteable)
+		cts : [allCategory] //ALL category as default (later made non-deleteable)
 	}
 });
 
@@ -74,7 +75,7 @@ function createCategory(name, tags){
 	categories.push(category);
 }
 
-//generate tags given dirent.name (eg 'Clap-01.wav') would generate potentially user generated 'clap' tag;
+//generate tags given dirent.name (eg 'Clap-01.wav') would potentially generate 'clap' tag (if 'clap' were designated by user);
 function generateTags(filename){
 	let lowercase = filename.toLowerCase();
 	const tokenized = lowercase.split(" ").join(",").split("-").join(",").split("_").join(",").split(",");
